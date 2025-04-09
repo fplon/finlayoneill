@@ -1,120 +1,53 @@
 "use server";
 
-import puppeteer from "puppeteer-core";
-import chromium from "@sparticuz/chromium-min";
-import fs from "fs";
-
-async function getBrowser() {
-  // Check if we're running locally
-  const isDev = process.env.NODE_ENV === "development";
-
-  if (isDev) {
-    // For local development, let puppeteer-core find Chrome
-    return puppeteer.launch({
-      args: [
-        "--hide-scrollbars",
-        "--disable-web-security",
-        "--ignore-certificate-errors",
-      ],
-      // Use locally installed Chrome in development
-      executablePath: await getLocalChromePath(),
-      headless: true,
-    });
-  } else {
-    // For serverless (Vercel) environment
-    try {
-      // Set environment variable to control where chromium is extracted
-      process.env.CHROME_BIN = "/tmp/chrome-binary";
-
-      // Ensure the extraction directory exists
-      const extractDir = "/tmp/chrome-binary";
-      try {
-        if (!fs.existsSync(extractDir)) {
-          fs.mkdirSync(extractDir, { recursive: true });
-        }
-      } catch (error) {
-        console.error("Error creating extraction directory:", error);
-      }
-
-      // Add debugging to see where chromium is looking for files
-      console.log("Current directory:", process.cwd());
-      console.log("Temp directory exists:", fs.existsSync("/tmp"));
-      console.log("Extract directory exists:", fs.existsSync(extractDir));
-
-      // Get the executable path - apply options for AWS lambda environment
-      const execPath = await chromium.executablePath();
-      console.log("Executable path:", execPath);
-
-      return puppeteer.launch({
-        args: [
-          ...chromium.args,
-          "--no-sandbox",
-          "--disable-dev-shm-usage",
-          "--single-process",
-        ],
-        defaultViewport: chromium.defaultViewport,
-        executablePath: execPath,
-        headless: chromium.headless,
-      });
-    } catch (error) {
-      console.error("Error setting up browser:", error);
-      throw error;
-    }
-  }
+// Define proper interfaces for type safety
+interface Browser {
+  newPage: () => Promise<Page>;
+  close: () => Promise<void>;
 }
 
-// Helper function to find local Chrome path based on OS
-async function getLocalChromePath() {
-  // MacOS locations for Chrome
-  const macChromePaths = [
-    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary",
-  ];
+interface Page {
+  setViewport: (options: {
+    width: number;
+    height: number;
+    deviceScaleFactor: number;
+  }) => Promise<void>;
+  goto: (
+    url: string,
+    options?: { waitUntil: string; timeout: number }
+  ) => Promise<void>;
+  addScriptTag: (options: { content: string }) => Promise<void>;
+  waitForSelector: (
+    selector: string,
+    options?: { timeout: number }
+  ) => Promise<void>;
+  evaluate: (fn: () => void) => Promise<void>;
+  addStyleTag: (options: { content: string }) => Promise<void>;
+  pdf: (options: PDFOptions) => Promise<Uint8Array>;
+}
 
-  // Windows locations
-  const winChromePaths = [
-    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-    "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-  ];
-
-  // Linux locations
-  const linuxChromePaths = [
-    "/usr/bin/google-chrome",
-    "/usr/bin/chromium-browser",
-  ];
-
-  let paths;
-  if (process.platform === "darwin") {
-    paths = macChromePaths;
-  } else if (process.platform === "win32") {
-    paths = winChromePaths;
-  } else {
-    paths = linuxChromePaths;
-  }
-
-  // Check if any of these paths exist
-  for (const path of paths) {
-    try {
-      // Check if file exists
-      await fs.promises.access(path, fs.constants.F_OK);
-      return path;
-    } catch (error) {
-      // Path doesn't exist, try next one
-      console.error(`Error accessing path ${path}:`, error);
-    }
-  }
-
-  // If we get here, no Chrome installation was found
-  throw new Error(
-    "Could not find a Chrome installation. Please install Chrome."
-  );
+interface PDFOptions {
+  format: string;
+  printBackground: boolean;
+  margin: {
+    top: string;
+    bottom: string;
+    left: string;
+    right: string;
+  };
+  scale: number;
+  displayHeaderFooter: boolean;
+  preferCSSPageSize: boolean;
+  omitBackground: boolean;
+  timeout: number;
 }
 
 export async function generateCvPdf(): Promise<{
   pdfBuffer: Uint8Array;
   filename: string;
 }> {
-  let browser;
+  let browser: Browser | null = null;
+
   try {
     // Add timestamp to filename in development to prevent caching
     const isDev = process.env.NODE_ENV === "development";
@@ -122,9 +55,50 @@ export async function generateCvPdf(): Promise<{
     const filename = `CV-Finlay-ONeill${timestamp}.pdf`;
 
     console.log("Launching browser...");
-    browser = await getBrowser();
-    console.log("Browser launched successfully");
 
+    // Check if the environment is development
+    if (isDev) {
+      // Use full puppeteer in development mode - with dynamic import
+      const puppeteer = await import("puppeteer");
+      browser = (await puppeteer.default.launch({
+        headless: true,
+        args: [
+          "--hide-scrollbars",
+          "--disable-web-security",
+          "--ignore-certificate-errors",
+        ],
+      })) as unknown as Browser;
+    } else {
+      // Import the packages required on production - with dynamic import
+      console.log("Running in production mode with @sparticuz/chromium");
+
+      // Using Function constructor to avoid TypeScript errors with dynamic imports
+      // This is a workaround for the missing type declarations
+      const chromiumModule = new Function(
+        'return import("@sparticuz/chromium")'
+      )();
+      const puppeteerCore = await import("puppeteer-core");
+
+      const chromium = await chromiumModule;
+
+      // Log chromium info to help debug
+      console.log("Chromium args:", chromium.args);
+      console.log("Chromium headless:", chromium.headless);
+
+      // Assign the browser instance with the minimal configuration
+      browser = (await puppeteerCore.default.launch({
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless,
+        defaultViewport: chromium.defaultViewport,
+        args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
+      })) as unknown as Browser;
+    }
+
+    if (!browser) {
+      throw new Error("Failed to launch browser");
+    }
+
+    console.log("Browser launched successfully");
     const page = await browser.newPage();
 
     // Set viewport for consistent rendering
@@ -333,7 +307,9 @@ export async function generateCvPdf(): Promise<{
       console.log("Closing browser...");
       await browser
         .close()
-        .catch((err) => console.error("Error closing browser:", err));
+        .catch((error: Error) =>
+          console.error("Error closing browser:", error)
+        );
       console.log("Browser closed");
     }
   }
