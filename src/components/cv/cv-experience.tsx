@@ -8,7 +8,7 @@ export function CvExperience(): JSX.Element {
   return (
     <section>
       <h2 className="text-xl font-semibold text-gray-700 border-b border-gray-200 mb-4 pb-1 print:text-lg print:mb-2 print:pb-1">
-        Professional Experience
+        PROFESSIONAL EXPERIENCE
       </h2>
       <div className="space-y-5 print:space-y-3">
         {EXPERIENCE.map((exp: ExperienceType, index: number) => (

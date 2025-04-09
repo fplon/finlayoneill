@@ -8,6 +8,7 @@ interface ScrambleLinkProps {
   href: string;
   className?: string;
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  disabled?: boolean;
 }
 
 const CHARACTERS =
@@ -21,6 +22,7 @@ export function ScrambleLink({
   href,
   className = "",
   onClick,
+  disabled = false,
 }: ScrambleLinkProps): JSX.Element {
   const [displayText, setDisplayText] = useState(text);
   const mountIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -82,7 +84,7 @@ export function ScrambleLink({
   }, [text]);
 
   const handleMouseEnter = useCallback(() => {
-    if (!isMounted || hoverIntervalRef.current) return;
+    if (!isMounted || hoverIntervalRef.current || disabled) return;
 
     let hoverIterations = 0;
     const totalHoverSteps = HOVER_SCRAMBLE_DURATION_MS / SCRAMBLE_SPEED_MS;
@@ -103,7 +105,7 @@ export function ScrambleLink({
         setDisplayText(text);
       }
     }, SCRAMBLE_SPEED_MS);
-  }, [isMounted, text]);
+  }, [isMounted, text, disabled]);
 
   const handleMouseLeave = useCallback(() => {
     if (hoverIntervalRef.current) {
@@ -113,13 +115,29 @@ export function ScrambleLink({
     }
   }, [text]);
 
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      if (disabled) {
+        event.preventDefault();
+        return;
+      }
+      onClick?.(event);
+    },
+    [onClick, disabled]
+  );
+
   return (
     <Link
-      href={href}
-      className={`text-sm font-mono text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors duration-300 ${className}`}
+      href={disabled ? "#" : href}
+      className={`text-sm font-mono ${
+        disabled
+          ? "text-gray-400 cursor-not-allowed"
+          : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 cursor-pointer"
+      } transition-colors duration-300 ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onClick={onClick}
+      onClick={handleClick}
+      aria-disabled={disabled}
     >
       {displayText}
     </Link>

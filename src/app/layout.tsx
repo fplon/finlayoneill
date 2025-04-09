@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Livvic, Epilogue, Fira_Code } from "next/font/google";
+import { Epilogue, Fira_Code, Livvic } from "next/font/google";
 import "./globals.css";
 
 const livvic = Livvic({
