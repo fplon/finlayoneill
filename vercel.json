@@ -1,14 +1,8 @@
 {
-  "installCommand": "npm install && npx puppeteer browsers install chrome@stable",
-  "buildCommand": "npm run build",
   "functions": {
     "app/api/download-cv/route": {
       "memory": 3008,
       "maxDuration": 60
     }
-  },
-  "env": {
-    "PUPPETEER_CACHE_DIR": "/tmp/puppeteer-cache",
-    "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true"
   }
 }
