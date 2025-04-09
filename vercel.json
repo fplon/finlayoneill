@@ -1,10 +1,4 @@
 {
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
   "installCommand": "npm install && npx puppeteer browsers install chrome@stable",
   "buildCommand": "npm run build",
   "functions": {
