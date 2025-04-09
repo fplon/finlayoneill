@@ -22,12 +22,44 @@ async function getBrowser() {
     });
   } else {
     // For serverless (Vercel) environment
-    return puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-    });
+    try {
+      // Set environment variable to control where chromium is extracted
+      process.env.CHROME_BIN = "/tmp/chrome-binary";
+
+      // Ensure the extraction directory exists
+      const extractDir = "/tmp/chrome-binary";
+      try {
+        if (!fs.existsSync(extractDir)) {
+          fs.mkdirSync(extractDir, { recursive: true });
+        }
+      } catch (error) {
+        console.error("Error creating extraction directory:", error);
+      }
+
+      // Add debugging to see where chromium is looking for files
+      console.log("Current directory:", process.cwd());
+      console.log("Temp directory exists:", fs.existsSync("/tmp"));
+      console.log("Extract directory exists:", fs.existsSync(extractDir));
+
+      // Get the executable path - apply options for AWS lambda environment
+      const execPath = await chromium.executablePath();
+      console.log("Executable path:", execPath);
+
+      return puppeteer.launch({
+        args: [
+          ...chromium.args,
+          "--no-sandbox",
+          "--disable-dev-shm-usage",
+          "--single-process",
+        ],
+        defaultViewport: chromium.defaultViewport,
+        executablePath: execPath,
+        headless: chromium.headless,
+      });
+    } catch (error) {
+      console.error("Error setting up browser:", error);
+      throw error;
+    }
   }
 }
 
