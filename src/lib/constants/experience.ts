@@ -7,28 +7,21 @@ export interface Experience {
   technologies: string[];
 }
 
+export interface Education {
+  degree: string;
+  award?: string;
+  institution: string;
+  startDate: string;
+  endDate?: string;
+}
+
 export const EXPERIENCE: Experience[] = [
-  // {
-  //   role: "Founder",
-  //   company: "Paradigmz",
-  //   startDate: "01-08-2024",
-  //   description:
-  //     "Set up a Data & Digital Consutlancy aimed at helping clients unlock demonstrable value from their data on both internal and client-facing platforms.",
-  //   technologies: [
-  //     "Python",
-  //     "SQL",
-  //     "Typescript",
-  //     "Next.Js",
-  //     "React",
-  //     "MongoDB",
-  //   ],
-  // },
   {
     role: "Data Engineer",
     company: "Aberdeen Investments",
     startDate: "03-2023",
     description:
-      "Working within the Modelling & Quantitative Analytics department, tasked with democratising data across the company to ensure investment decision making is taken on the back of high-quality data sources. Also developed bespoke tools and dashboards.",
+      "Working within the Modelling & Quantitative Analytics department, tasked with democratising data across the company to ensure investment decision making is taken on the back of high-quality data sources. Developed bespoke tools and dashboards to support users to access and utilise data.",
     technologies: [
       "Python",
       "SQL",
@@ -79,15 +72,6 @@ export const EXPERIENCE: Experience[] = [
       "DBT",
     ],
   },
-  // {
-  //   role: "Master's in Data Science Post Graduate",
-  //   company: "University of Stirling",
-  //   startDate: "09-2020",
-  //   endDate: "09-2021",
-  //   description:
-  //     "Completed a Master's in Data Science with Distinction, focusing on machine learning and statistical methods.",
-  //   technologies: ["Python", "SQL", "R", "Git"],
-  // },
   {
     role: "Investment Risk Manager",
     company: "Aberdeen Investments",
@@ -129,5 +113,28 @@ export const EXPERIENCE: Experience[] = [
     description:
       "Automation of investment portfolio transaction reporting and reconcilations with custody banks",
     technologies: ["Excel VBA", "SQL", "Microsoft Access"],
+  },
+];
+
+export const EDUCATION: Education[] = [
+  {
+    degree: "MSc in Big Data (Data Science)",
+    award: "Distinction",
+    institution: "University of Stirling",
+    startDate: "09-2020",
+    endDate: "09-2021",
+  },
+  {
+    degree: "CFA Charter",
+    institution: "Chartered Financial Analyst Institute",
+    startDate: "06-2016",
+    endDate: "06-2018",
+  },
+  {
+    degree: "MA (Hons) in Accountancy & Business Law",
+    award: "2.1",
+    institution: "Heriot Watt University",
+    startDate: "09-2009",
+    endDate: "06-2012",
   },
 ];

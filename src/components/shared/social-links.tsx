@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowIcon } from "@/components/icons/arrow-icon";
 import { scrambleText } from "@/lib/utils/text-effects";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -116,23 +117,13 @@ export function SocialLinks({
           >
             <span className="w-[97px]">{displayTexts[index]}</span>
             {completedLinks[index] && (
-              <motion.svg
+              <motion.div
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.2 }}
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                />
-              </motion.svg>
+                <ArrowIcon className="h-4 w-4" />
+              </motion.div>
             )}
           </motion.a>
         </div>

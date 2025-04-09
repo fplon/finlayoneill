@@ -1,7 +1,9 @@
 "use client";
 
+import { ArrowIcon } from "@/components/icons/arrow-icon";
 import { EXPERIENCE } from "@/lib/constants/experience";
 import { useScroll, useTransform } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { TypewriterEffect } from "../shared/typewriter-effect";
 import { ExperienceItem } from "./experience-item";
@@ -66,13 +68,12 @@ export function Experience() {
                 ))}
 
                 {/* CV Link */}
-                <a
-                  href="mailto:me@finlayoneill.dev"
-                  className="inline-block mt-8 font-firaCode text-sm hover:text-roughAsphalt/70 transition-colors"
+                <Link
+                  href="/cv"
+                  className="inline-flex items-center gap-1 mt-8 font-firaCode text-sm text-roughAsphalt/60 hover:text-roughAsphalt transition-colors"
                 >
-                  {/* see_full_experience → */}
-                  contact_me_for_full_cv →
-                </a>
+                  see_full_experience <ArrowIcon className="h-3 w-3" />
+                </Link>
               </div>
             </div>
           </div>
