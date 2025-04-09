@@ -2,7 +2,7 @@
   "installCommand": "npm install && npx puppeteer browsers install chrome@stable",
   "buildCommand": "npm run build",
   "functions": {
-    "api/download-cv": {
+    "app/api/download-cv/route": {
       "memory": 3008,
       "maxDuration": 60
     }
