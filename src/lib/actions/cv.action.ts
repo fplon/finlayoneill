@@ -1,6 +1,89 @@
 "use server";
 
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium-min";
+import fs from "fs";
+
+async function getBrowser() {
+  // Check if we're running locally
+  const isDev = process.env.NODE_ENV === "development";
+
+  if (isDev) {
+    // For local development, let puppeteer-core find Chrome
+    return puppeteer.launch({
+      args: [
+        "--hide-scrollbars",
+        "--disable-web-security",
+        "--ignore-certificate-errors",
+      ],
+      // Use locally installed Chrome in development
+      executablePath: await getLocalChromePath(),
+      headless: true,
+    });
+  } else {
+    // For serverless (Vercel) environment, use @sparticuz/chromium-min
+    return puppeteer.launch({
+      args: [
+        ...chromium.args,
+        "--hide-scrollbars",
+        "--disable-web-security",
+        "--ignore-certificate-errors",
+      ],
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(
+        `https://github.com/Sparticuz/chromium/releases/download/v129.0.0/chromium-v129.0.0-pack.tar`
+      ),
+      headless: chromium.headless,
+    });
+  }
+}
+
+// Helper function to find local Chrome path based on OS
+async function getLocalChromePath() {
+  // MacOS locations for Chrome
+  const macChromePaths = [
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary",
+  ];
+
+  // Windows locations
+  const winChromePaths = [
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+  ];
+
+  // Linux locations
+  const linuxChromePaths = [
+    "/usr/bin/google-chrome",
+    "/usr/bin/chromium-browser",
+  ];
+
+  let paths;
+  if (process.platform === "darwin") {
+    paths = macChromePaths;
+  } else if (process.platform === "win32") {
+    paths = winChromePaths;
+  } else {
+    paths = linuxChromePaths;
+  }
+
+  // Check if any of these paths exist
+  for (const path of paths) {
+    try {
+      // Check if file exists
+      await fs.promises.access(path, fs.constants.F_OK);
+      return path;
+    } catch (error) {
+      // Path doesn't exist, try next one
+      console.error(`Error accessing path ${path}:`, error);
+    }
+  }
+
+  // If we get here, no Chrome installation was found
+  throw new Error(
+    "Could not find a Chrome installation. Please install Chrome."
+  );
+}
 
 export async function generateCvPdf(): Promise<{
   pdfBuffer: Uint8Array;
@@ -13,44 +96,8 @@ export async function generateCvPdf(): Promise<{
     const timestamp = isDev ? `-${Date.now()}` : "";
     const filename = `CV-Finlay-ONeill${timestamp}.pdf`;
 
-    // Launch Puppeteer with appropriate settings for Vercel
-    const options = {
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu",
-        "--hide-scrollbars",
-        "--disable-web-security",
-        "--font-render-hinting=none", // Improve font rendering
-        "--single-process", // Recommended for serverless environments
-      ],
-      ignoreHTTPSErrors: true,
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-    };
-
-    // In production, we need to explicitly install the browser first
-    if (!isDev) {
-      try {
-        // Only try to install Chrome if we're in a serverless environment
-        // and there's no custom executable path provided
-        if (!process.env.PUPPETEER_EXECUTABLE_PATH) {
-          // Dynamically import for better code splitting
-          const { execSync } = await import("child_process");
-
-          // Use Chrome stable version
-          console.log("Installing Chrome in serverless environment...");
-          execSync("npx puppeteer browsers install chrome@stable");
-        }
-      } catch (installError) {
-        console.error("Error installing Chrome:", installError);
-        // Continue anyway - Chrome might be available from the vercel.json installCommand
-      }
-    }
-
     console.log("Launching browser...");
-    browser = await puppeteer.launch(options);
+    browser = await getBrowser();
     console.log("Browser launched successfully");
 
     const page = await browser.newPage();
