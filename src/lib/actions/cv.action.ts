@@ -13,11 +13,46 @@ export async function generateCvPdf(): Promise<{
     const timestamp = isDev ? `-${Date.now()}` : "";
     const filename = `CV-Finlay-ONeill${timestamp}.pdf`;
 
-    // Launch Puppeteer with appropriate settings
-    browser = await puppeteer.launch({
+    // Launch Puppeteer with appropriate settings for Vercel
+    const options = {
       headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+        "--hide-scrollbars",
+        "--disable-web-security",
+        "--font-render-hinting=none", // Improve font rendering
+        "--single-process", // Recommended for serverless environments
+      ],
+      ignoreHTTPSErrors: true,
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+    };
+
+    // In production, we need to explicitly install the browser first
+    if (!isDev) {
+      try {
+        // Only try to install Chrome if we're in a serverless environment
+        // and there's no custom executable path provided
+        if (!process.env.PUPPETEER_EXECUTABLE_PATH) {
+          // Dynamically import for better code splitting
+          const { execSync } = await import("child_process");
+
+          // Use Chrome stable version
+          console.log("Installing Chrome in serverless environment...");
+          execSync("npx puppeteer browsers install chrome@stable");
+        }
+      } catch (installError) {
+        console.error("Error installing Chrome:", installError);
+        // Continue anyway - Chrome might be available from the vercel.json installCommand
+      }
+    }
+
+    console.log("Launching browser...");
+    browser = await puppeteer.launch(options);
+    console.log("Browser launched successfully");
+
     const page = await browser.newPage();
 
     // Set viewport for consistent rendering
@@ -25,11 +60,13 @@ export async function generateCvPdf(): Promise<{
 
     // Navigate to the CV page
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    console.log(`Using base URL: ${baseUrl}`);
 
     // First navigate to a blank page to load fonts
     await page.goto("about:blank");
 
     // Add font preloading
+    console.log("Adding font preloading...");
     await page.addScriptTag({
       content: `
         // Preload Epilogue font files
@@ -51,16 +88,21 @@ export async function generateCvPdf(): Promise<{
       `,
     });
 
+    // Additional console logs for debugging
+    console.log("Navigating to CV page...");
+
     // Now navigate to the actual CV page
     await page.goto(`${baseUrl}/cv?print=true`, {
       waitUntil: "networkidle0",
       timeout: 30000, // 30 second timeout
     });
+    console.log("CV page loaded");
 
     // Wait for specific content to ensure it's fully loaded
     await page.waitForSelector(".max-w-4xl", { timeout: 5000 });
 
     // Preload and force Epilogue font application
+    console.log("Applying fonts...");
     await page.evaluate(() => {
       // Load the actual font files
       const fontFiles = [
@@ -185,8 +227,10 @@ export async function generateCvPdf(): Promise<{
         }
       `,
     });
+    console.log("CV content loaded and fonts applied");
 
     // Generate PDF with settings for optimal readability and return as buffer
+    console.log("Generating PDF...");
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
@@ -202,6 +246,7 @@ export async function generateCvPdf(): Promise<{
       omitBackground: false,
       timeout: 60000,
     });
+    console.log("PDF generated successfully");
 
     return { pdfBuffer, filename };
   } catch (error) {
@@ -213,9 +258,11 @@ export async function generateCvPdf(): Promise<{
   } finally {
     // Ensure browser is always closed, even in case of errors
     if (browser) {
+      console.log("Closing browser...");
       await browser
         .close()
         .catch((err) => console.error("Error closing browser:", err));
+      console.log("Browser closed");
     }
   }
 }

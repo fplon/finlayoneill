@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npx puppeteer browsers install chrome@stable"
   },
   "dependencies": {
     "@types/react-icons": "^2.2.7",
