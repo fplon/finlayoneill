@@ -36,6 +36,16 @@ export function CvTitleLinks(): JSX.Element {
 
       <div className="text-sm text-gray-600 mt-1 print:text-xs w-full flex justify-center items-center flex-wrap gap-x-2 gap-y-1">
         <a
+          href="https://github.com/fplon"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:underline print:no-underline inline-flex items-center gap-1"
+          aria-label="GitHub Profile"
+        >
+          <FaGithub className="h-4 w-4 flex-shrink-0" /> fplon
+        </a>
+        <span className="text-gray-400 print:text-gray-400">|</span>
+        <a
           href="https://www.linkedin.com/in/finlay-o-neill-cfa-25655574/"
           target="_blank"
           rel="noopener noreferrer"
@@ -44,16 +54,6 @@ export function CvTitleLinks(): JSX.Element {
         >
           <FaLinkedin className="h-4 w-4 flex-shrink-0" />{" "}
           finlay-o-neill-cfa-25655574
-        </a>
-        <span className="text-gray-400 print:text-gray-400">|</span>
-        <a
-          href="https://github.com/fplon"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:underline print:no-underline inline-flex items-center gap-1"
-          aria-label="GitHub Profile"
-        >
-          <FaGithub className="h-4 w-4 flex-shrink-0" /> fplon
         </a>
         <span className="text-gray-400 print:text-gray-400">|</span>
         <a

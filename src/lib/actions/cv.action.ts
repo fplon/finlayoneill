@@ -21,18 +21,11 @@ async function getBrowser() {
       headless: true,
     });
   } else {
-    // For serverless (Vercel) environment, use @sparticuz/chromium-min
+    // For serverless (Vercel) environment
     return puppeteer.launch({
-      args: [
-        ...chromium.args,
-        "--hide-scrollbars",
-        "--disable-web-security",
-        "--ignore-certificate-errors",
-      ],
+      args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(
-        `https://github.com/Sparticuz/chromium/releases/download/v129.0.0/chromium-v129.0.0-pack.tar`
-      ),
+      executablePath: await chromium.executablePath(),
       headless: chromium.headless,
     });
   }
