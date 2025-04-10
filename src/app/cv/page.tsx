@@ -1,13 +1,16 @@
+"use client";
+
 import { CvEducation } from "@/components/cv/cv-education";
 import { CvExperience } from "@/components/cv/cv-experience";
 import { CvHeaderLinks } from "@/components/cv/cv-header-links";
 import { CvTitleLinks } from "@/components/cv/cv-title-links";
-import { Metadata } from "next";
+// import { Metadata } from "next";
+import { useRef } from "react";
 
-export const metadata: Metadata = {
-  title: "CV | Finlay O'Neill",
-  description: "View the CV of Finlay O'Neill.",
-};
+// export const metadata: Metadata = {
+//   title: "CV | Finlay O'Neill",
+//   description: "View the CV of Finlay O'Neill.",
+// };
 
 interface PageProps {
   searchParams: {
@@ -17,6 +20,7 @@ interface PageProps {
 
 export default function CvPage({ searchParams }: PageProps): JSX.Element {
   const isPrintMode = searchParams.print === "true";
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // ensure optimal PDF rendering
   const containerClasses = isPrintMode
@@ -30,9 +34,9 @@ export default function CvPage({ searchParams }: PageProps): JSX.Element {
 
   return (
     <main className={mainClasses}>
-      {!isPrintMode && <CvHeaderLinks />}
+      {!isPrintMode && <CvHeaderLinks contentRef={contentRef} />}
 
-      <div className={containerClasses}>
+      <div className={containerClasses} ref={contentRef}>
         <CvTitleLinks />
         <CvExperience />
         <CvEducation />
