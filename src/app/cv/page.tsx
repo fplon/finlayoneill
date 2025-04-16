@@ -1,6 +1,6 @@
 import { CvEducation } from "@/components/cv/cv-education";
 import { CvExperience } from "@/components/cv/cv-experience";
-import { CvHeaderLinksWrapper } from "@/components/cv/cv-header-links-wrapper";
+import { CvHeaderLinks } from "@/components/cv/cv-header-links";
 import { CvTitleLinks } from "@/components/cv/cv-title-links";
 import { Metadata } from "next";
 
@@ -9,41 +9,22 @@ export const metadata: Metadata = {
   description: "View the CV of Finlay O'Neill.",
 };
 
-interface PageProps {
-  searchParams: {
-    print?: string;
-  };
-}
-
-export default function CvPage({ searchParams }: PageProps): JSX.Element {
-  const isPrintMode = searchParams.print === "true";
-
-  // ensure optimal PDF rendering
-  const containerClasses = isPrintMode
-    ? "max-w-4xl mx-auto bg-white p-8 sm:p-12 shadow-none rounded-none"
-    : "max-w-4xl mx-auto bg-white p-8 sm:p-12 shadow-lg print:shadow-none print:rounded-none print:p-0 print:m-0";
-
-  // main container in print mode
-  const mainClasses = isPrintMode
-    ? "bg-white p-0"
-    : "min-h-screen bg-cocosBlacks p-4 sm:p-8 print:bg-white";
+export default function CvPage(): JSX.Element {
+  // Container classes for styling
+  const containerClasses =
+    "max-w-4xl mx-auto bg-white p-8 sm:p-12 shadow-lg print:shadow-none print:rounded-none font-epilogue print:w-[210mm] print:h-[297mm] print:mx-0";
+  const mainClasses =
+    "min-h-screen bg-cocosBlacks p-4 sm:p-8 print:bg-white print:p-0";
 
   return (
     <main className={mainClasses}>
-      {!isPrintMode && <CvHeaderLinksWrapper />}
+      <CvHeaderLinks />
 
       <div className={containerClasses} id="cv-content">
         <CvTitleLinks />
         <CvExperience />
         <CvEducation />
       </div>
-
-      {isPrintMode && (
-        <div className="hidden">
-          <meta name="author" content="Finlay O'Neill" />
-          <meta name="keywords" content="CV, Resume, Finlay O'Neill" />
-        </div>
-      )}
     </main>
   );
 }

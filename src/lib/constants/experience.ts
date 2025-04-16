@@ -21,7 +21,7 @@ export const EXPERIENCE: Experience[] = [
     company: "Aberdeen Investments",
     startDate: "03-2023",
     description:
-      "Working within the Modelling & Quantitative Analytics department, tasked with democratising data across the company to ensure investment decision making is taken on the back of high-quality data sources. Developed bespoke tools and dashboards to support users to access and utilise data.",
+      "Working within the Modelling & Quantitative Analytics department, tasked with democratising data across the company to ensure investment decision making is taken on the back of high-quality data sources. Developed data pipelines, dashboards and bespoke tools to support users to access and utilise data.",
     technologies: [
       "Python",
       "SQL",
@@ -78,7 +78,7 @@ export const EXPERIENCE: Experience[] = [
     startDate: "04-2019",
     endDate: "11-2019",
     description:
-      "Analytical role to monitor the risk profiles of Multi-Asset investment portfolios. Responsibility to develop new tooling to meet regulation and growing set of sophisticated investment types. Left to pursue MSc in Data Science.",
+      "Analytical role to monitor the risk profiles of Multi-Asset investment portfolios. Responsibility to develop new tooling to meet regulation and growing set of sophisticated investment types.",
     technologies: [
       "Python",
       "SQL",
