@@ -13,7 +13,7 @@ export function CvEducation(): JSX.Element {
       <div className="space-y-4 print:space-y-2">
         {EDUCATION.map((edu: EducationType, index: number) => (
           <div key={index} className="break-inside-avoid">
-            <div className="flex justify-between items-baseline print:mb-0.5">
+            <div className="flex flex-col items-start print:mb-0.5 sm:flex-row sm:justify-between sm:items-baseline">
               <h3 className="text-lg font-semibold text-gray-800 print:text-base">
                 {edu.degree}
                 {edu.award && (
