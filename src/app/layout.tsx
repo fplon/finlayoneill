@@ -14,6 +14,9 @@ const epilogue = Epilogue({
   display: "swap",
   variable: "--font-epilogue",
   weight: ["400", "500", "600", "700"],
+  preload: true,
+  fallback: ["system-ui", "arial"],
+  adjustFontFallback: true,
 });
 
 const firaCode = Fira_Code({
