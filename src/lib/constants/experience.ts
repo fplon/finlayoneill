@@ -135,6 +135,6 @@ export const EDUCATION: Education[] = [
     award: "2.1",
     institution: "Heriot Watt University",
     startDate: "09-2009",
-    endDate: "06-2012",
+    endDate: "06-2013",
   },
 ];
