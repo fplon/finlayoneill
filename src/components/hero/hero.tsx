@@ -6,7 +6,7 @@ import { SocialLinks } from "@/components/shared/social-links";
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen w-full px-4 md:px-8">
+    <section className="relative bg-cocosBlacks min-h-screen w-full px-4 md:px-8">
       <div className="grid h-screen grid-cols-12 gap-4">
         {/* Content starts from 6th column on desktop */}
         <div className="col-span-12 flex flex-col justify-center md:col-start-6 md:col-span-6">

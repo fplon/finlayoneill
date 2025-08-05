@@ -11,7 +11,7 @@ function AnimatedText({ text, shouldAnimate }: AnimatedTextProps) {
   return (
     <div className="relative w-[20ch]">
       <div
-        className={`font-firaCode text-roughAsphalt-100 overflow-hidden whitespace-nowrap
+        className={`font-firaCode text-roughAsphalt overflow-hidden whitespace-nowrap
                     ${shouldAnimate ? "animate-typewriter" : "w-full"}`}
       >
         {text}
