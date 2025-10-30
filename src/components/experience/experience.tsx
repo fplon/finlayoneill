@@ -11,7 +11,7 @@ import { Timeline } from "./timeline";
 
 export function Experience() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const displayExperience = EXPERIENCE.slice(0, 3);
+  const displayExperience = EXPERIENCE.slice(0, 4);
   const [visibleItems, setVisibleItems] = useState<boolean[]>(
     new Array(displayExperience.length).fill(false)
   );

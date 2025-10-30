@@ -17,9 +17,26 @@ export interface Education {
 
 export const EXPERIENCE: Experience[] = [
   {
+    role: "Python Developer",
+    company: "Columbia Threadneedle Investments",
+    startDate: "10-2025",
+    description:
+      "Working within the Investment Risk team on a contract basis, leading the migration of team workflows in coordination with a data migration to Snowflake. Tasked with standardising Python development practices across a globally distributed team to improve efficiency and eliminate redundant processes.",
+    technologies: [
+      "Python",
+      "SQL",
+      "AWS",
+      "AWS SageMaker",
+      "Snowflake",
+      "Jenkins",
+      "Aladdin",
+    ],
+  },
+  {
     role: "Data Engineer",
     company: "Aberdeen Investments",
     startDate: "03-2023",
+    endDate: "09-2025",
     description:
       "Working within the Modelling & Quantitative Analytics department, tasked with democratising data across the company to ensure investment decision making is taken on the back of high-quality data sources. Developed data pipelines, dashboards and bespoke tools to support users to access and utilise data.",
     technologies: [
@@ -33,7 +50,6 @@ export const EXPERIENCE: Experience[] = [
       "TeamCity",
       "Snowflake",
       "Terraform",
-      "Powershell",
     ],
   },
   {
