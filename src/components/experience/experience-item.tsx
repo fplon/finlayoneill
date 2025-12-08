@@ -27,19 +27,23 @@ export function ExperienceItem({ experience, isVisible }: ExperienceItemProps) {
             {experience.startDate} - {experience.endDate || "Present"}
           </span>
         </div>
-        <p className="mt-4 text-sm md:text-base text-roughAsphalt/80">
-          {experience.description}
-        </p>
-        <div className="flex flex-wrap gap-1.5 md:gap-2 mt-4 font-mono">
-          {experience.technologies.map((tech) => (
-            <span
-              key={tech}
-              className="px-2 md:px-3 py-1 bg-roughAsphalt/10 rounded-full text-xs md:text-sm"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
+        {experience.description && (
+          <p className="mt-4 text-sm md:text-base text-roughAsphalt/80">
+            {experience.description}
+          </p>
+        )}
+        {experience.technologies && experience.technologies.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 md:gap-2 mt-4 font-mono">
+            {experience.technologies.map((tech) => (
+              <span
+                key={tech}
+                className="px-2 md:px-3 py-1 bg-roughAsphalt/10 rounded-full text-xs md:text-sm"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </motion.div>
   );
