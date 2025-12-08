@@ -21,7 +21,7 @@ interface SocialLinksProps {
 const socialLinks: SocialLink[] = [
   {
     name: "linkedin",
-    url: "https://www.linkedin.com/in/finlay-o-neill-cfa-25655574/",
+    url: "https://www.linkedin.com/in/finlay-oneill/",
   },
   {
     name: "github",

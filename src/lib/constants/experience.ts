@@ -110,26 +110,26 @@ export const EXPERIENCE: Experience[] = [
     company: "Aberdeen Investments",
     startDate: "09-2016",
     endDate: "04-2019",
-    description:
-      "Designed reporting tools to monitor the performance of Multi-Asset investment portfolios, competitor analysis and macroeconomic data.",
-    technologies: [
-      "Excel VBA",
-      "SQL",
-      "Microsoft SQL Server",
-      "Bloomberg",
-      "Salesforce",
-      "Microsoft SharePoint",
-    ],
+    // description:
+    //   "Designed reporting tools to monitor the performance of Multi-Asset investment portfolios, competitor analysis and macroeconomic data.",
+    // technologies: [
+    //   "Excel VBA",
+    //   "SQL",
+    //   "Microsoft SQL Server",
+    //   "Bloomberg",
+    //   "Salesforce",
+    //   "Microsoft SharePoint",
+    // ],
   },
   {
     role: "Investment Accountant",
     company: "Baillie Gifford",
     startDate: "04-2014",
     endDate: "09-2016",
-    description:
-      "Automation of investment portfolio transaction reporting and reconcilations with custody banks",
-    technologies: ["Excel VBA", "SQL", "Microsoft Access"],
-  },
+    // description:
+    // "Automation of investment portfolio transaction reporting and reconcilations with custody banks",
+  // technologies: ["Excel VBA", "SQL", "Microsoft Access"],
+   },
 ];
 
 export const EDUCATION: Education[] = [

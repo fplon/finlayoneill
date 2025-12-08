@@ -52,14 +52,14 @@ export function CvTitleLinks(): JSX.Element {
         </a>
         <span className="text-gray-400 print:hidden hidden sm:inline">|</span>
         <a
-          href="https://www.linkedin.com/in/finlay-o-neill-cfa-25655574/"
+          href="https://www.linkedin.com/in/finlay-oneill/"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:underline print:no-underline inline-flex items-center gap-1 print:gap-0.5"
           aria-label="LinkedIn Profile"
         >
           <FaLinkedin className="h-4 w-4 flex-shrink-0 print:h-3 print:w-3" />{" "}
-          finlay-o-neill-cfa-25655574
+          finlay-oneill
         </a>
         <span className="text-gray-400 print:hidden hidden sm:inline">|</span>
         <a
